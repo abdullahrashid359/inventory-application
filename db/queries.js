@@ -34,6 +34,8 @@ async function createGame(title, description = "", price, rating, genres, develo
         for (const developer of developers) {
             await pool.query("INSERT INTO games_developers (game_id, developer_id) VALUES ($1, $2)", [gameId, developer]);
         }
+
+    return gameId;
 }
 
 async function updateGame(id, title, description = "", price, rating, genres, developers) {
