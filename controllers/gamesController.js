@@ -63,7 +63,9 @@ async function updateGame(req, res) {
 }
 
 async function deleteGame(req, res) {
-    await db.deleteGame(Number(req.params.id));
+     const { id } = req.params;
+
+    await db.deleteGame(id);
 
     res.redirect('/');
 }
