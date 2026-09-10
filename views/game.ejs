@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= game.title %> - GameVault</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <%- include('partials/navbar') %>
+
+    <main class="main-content">
+        <article class="game-details">
+            <div class="page-header">
+                <h1 class="page-title"><%= game.title %></h1>
+                <a class="button" href="/games/<%= game.id %>/edit">
+                    Edit Game
+                </a>
+            </div>
+
+            <div class="game-info">
+                <p class="game-price">
+                    <strong>Price:</strong> $<%= game.price %>
+                </p>
+
+                <p class="game-rating">
+                    <strong>Rating:</strong> <%= game.rating %>/10
+                </p>
+
+                <div class="game-description">
+                    <h2>Description</h2>
+                    <p><%= game.description || 'No description available.' %></p>
+                </div>
+
+                <div class="game-genres">
+                    <h2>Genres</h2>
+
+                    <% if (game.genres.length > 0) { %>
+                        <ul>
+                            <% game.genres.forEach(genre => { %>
+                                <li><%= genre.name %></li>
+                            <% }) %>
+                        </ul>
+                    <% } else { %>
+                        <p>No genres assigned.</p>
+                    <% } %>
+                </div>
+
+                <div class="game-developers">
+                    <h2>Developers</h2>
+
+                    <% if (game.developers.length > 0) { %>
+                        <ul>
+                            <% game.developers.forEach(developer => { %>
+                                <li><%= developer.name %></li>
+                            <% }) %>
+                        </ul>
+                    <% } else { %>
+                        <p>No developers assigned.</p>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="game-actions">
+                <a class="button button-secondary" href="/games">
+                    Back to Games
+                </a>
+
+                <form action="/games/<%= game.id %>/delete" method="POST"
+                    onsubmit="return confirm('Are you sure you want to delete this game?');">
+                    <button class="button button-danger" type="submit">
+                        Delete Game
+                    </button>
+                </form>
+            </div>
+        </article>
+    </main>
+</body>
+</html>
