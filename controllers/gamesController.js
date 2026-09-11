@@ -1,3 +1,5 @@
+const { validationResult, matchedData } = require('express-validator');
+
 const CustomNotFoundError = require('../errors/CustomNotFoundError');
 const db = require('../db/queries');
 
@@ -26,9 +28,30 @@ async function showCreateGameForm(req, res) {
 }
 
 async function createGame(req, res) {
-    const { title, description, price, rating, developers, genres } = req.body
+    const errors = validationResult(req);
 
-    const gameId = await db.createGame(title, description, price, rating, genres, developers);
+    const developers = await db.getAllDevelopers();
+    const genres = await db.getAllGenres();
+
+    if (!errors.isEmpty()) {
+        return res.status(400).render('createGame', {
+            developers,
+            genres,
+            errors: errors.array(),
+            formData: req.body,
+        });
+    }
+
+    const { title, description, price, rating } = matchedData(req);
+
+    const gameId = await db.createGame(
+        title,
+        description,
+        price,
+        rating,
+        req.body.genres,
+        req.body.developers
+    );
 
     res.redirect(`/games/${gameId}`);
 }
@@ -55,21 +78,50 @@ async function updateGame(req, res) {
     if (!game)
         throw new CustomNotFoundError("Game not found");
 
-    const { title, description, price, rating, developers, genres } = req.body
+    const errors = validationResult(req);
 
-    await db.updateGame(id, title, description, price, rating, genres, developers);
+    const developers = await db.getAllDevelopers();
+    const genres = await db.getAllGenres();
+
+    if (!errors.isEmpty()) {
+        return res.status(400).render('updateGame', {
+            game: {
+                ...game,
+                ...req.body,
+            },
+            developers,
+            genres,
+            errors: errors.array(),
+        });
+    }
+
+    const { title, description, price, rating } = matchedData(req);
+
+    await db.updateGame(
+        id,
+        title,
+        description,
+        price,
+        rating,
+        req.body.genres,
+        req.body.developers
+    );
 
     res.redirect(`/games/${id}`);
 }
 
 async function deleteGame(req, res) {
-     const { id } = req.params;
-
-    await db.deleteGame(id);
+    await db.deleteGame(Number(req.params.id));
 
     res.redirect('/');
 }
 
 module.exports = {
-    getGames, getGame, showCreateGameForm, createGame, showUpdateGameForm, updateGame, deleteGame
-}
+    getGames,
+    getGame,
+    showCreateGameForm,
+    createGame,
+    showUpdateGameForm,
+    updateGame,
+    deleteGame,
+};

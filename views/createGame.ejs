@@ -14,15 +14,36 @@
             <h1 class="page-title">Add Game</h1>
         </div>
 
+        <% if (locals.errors && locals.errors.length > 0) { %>
+            <div class="form-errors">
+                <ul>
+                    <% locals.errors.forEach(error => { %>
+                        <li><%= error.msg %></li>
+                    <% }) %>
+                </ul>
+            </div>
+        <% } %>
+
         <form class="form" action="/games/new" method="POST">
+
             <div class="form-group">
                 <label for="title">Title</label>
-                <input type="text" id="title" name="title" required>
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value="<%= locals.formData?.title || '' %>"
+                    required
+                >
             </div>
 
             <div class="form-group">
                 <label for="description">Description</label>
-                <textarea id="description" name="description" rows="5"></textarea>
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="5"
+                ><%= locals.formData?.description || '' %></textarea>
             </div>
 
             <div class="form-group">
@@ -33,6 +54,7 @@
                     name="price"
                     min="0"
                     step="0.01"
+                    value="<%= locals.formData?.price || '' %>"
                     required
                 >
             </div>
@@ -46,6 +68,7 @@
                     min="0"
                     max="10"
                     step="0.1"
+                    value="<%= locals.formData?.rating || '' %>"
                 >
             </div>
 
@@ -58,6 +81,10 @@
                             type="checkbox"
                             name="genres"
                             value="<%= genre.id %>"
+                            <%= Array.isArray(locals.formData?.genres) &&
+                                locals.formData.genres.includes(String(genre.id))
+                                ? 'checked'
+                                : '' %>
                         >
                         <%= genre.name %>
                     </label>
@@ -73,6 +100,10 @@
                             type="checkbox"
                             name="developers"
                             value="<%= developer.id %>"
+                            <%= Array.isArray(locals.formData?.developers) &&
+                                locals.formData.developers.includes(String(developer.id))
+                                ? 'checked'
+                                : '' %>
                         >
                         <%= developer.name %>
                     </label>
@@ -88,6 +119,7 @@
                     Add Game
                 </button>
             </div>
+
         </form>
     </main>
 </body>

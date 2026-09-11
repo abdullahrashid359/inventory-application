@@ -14,10 +14,26 @@
             <h1 class="page-title">Add Developer</h1>
         </div>
 
+        <% if (locals.errors && locals.errors.length > 0) { %>
+            <div class="form-errors">
+                <ul>
+                    <% locals.errors.forEach(error => { %>
+                        <li><%= error.msg %></li>
+                    <% }) %>
+                </ul>
+            </div>
+        <% } %>
+
         <form class="form" action="/developers/new" method="POST">
             <div class="form-group">
                 <label for="name">Developer Name</label>
-                <input type="text" id="name" name="name" required>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value="<%= locals.formData?.name || '' %>"
+                    required
+                >
             </div>
 
             <div class="form-actions">

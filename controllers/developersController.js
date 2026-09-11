@@ -1,3 +1,5 @@
+const { validationResult, matchedData } = require('express-validator');
+
 const CustomNotFoundError = require('../errors/CustomNotFoundError');
 const db = require('../db/queries');
 
@@ -23,7 +25,15 @@ async function showCreateDeveloperForm(req, res) {
 }
 
 async function createDeveloper(req, res) {
-    const { name } = req.body;
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).render('createDeveloper', {
+            errors: errors.array(),
+            formData: req.body,
+        });
+    }
+    const { name } = matchedData(req);
 
     await db.createDeveloper(name);
 
@@ -44,7 +54,22 @@ async function showUpdateDeveloperForm(req, res) {
 async function updateDeveloper(req, res) {
     const { id } = req.params;
 
-    const { name } = req.body;
+    const result = await db.getDeveloperById(id);
+
+    if (!result.developer)
+        throw new CustomNotFoundError("Developer not found");
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).render('updateDeveloper', {
+            developer: result.developer,
+            id,
+            errors: errors.array(),
+        });
+    }
+
+    const { name } = matchedData(req);
 
     await db.updateDeveloper(id, name);
 
