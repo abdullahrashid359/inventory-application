@@ -38,7 +38,7 @@ async function showUpdateGenreForm(req, res) {
     if (!result.genre)
         throw new CustomNotFoundError("Genre not found");
 
-    res.render('updateGenre', { genre: result.genre });
+    res.render('updateGenre', { id, genre: result.genre });
 }
 
 async function updateGenre(req, res) {

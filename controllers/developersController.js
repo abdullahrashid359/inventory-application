@@ -38,7 +38,7 @@ async function showUpdateDeveloperForm(req, res) {
     if (!result.developer)
         throw new CustomNotFoundError("Developer not found");
 
-    res.render('updateDeveloper', { developer: result.developer });
+    res.render('updateDeveloper', { id, developer: result.developer });
 }
 
 async function updateDeveloper(req, res) {

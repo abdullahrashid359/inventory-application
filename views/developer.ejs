@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= developer.name %> - GameVault</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <%- include('partials/navbar') %>
+
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title"><%= developer.name %></h1>
+                <p>Games developed by <%= developer.name %></p>
+            </div>
+
+            <a class="button button-secondary" href="/developers">
+                Back to Developers
+            </a>
+        </div>
+
+        <section class="game-list">
+            <% if (games.length > 0) { %>
+
+                <% games.forEach(game => { %>
+                    <article class="game-card">
+                        <h2 class="game-card-title">
+                            <a href="/games/<%= game.id %>">
+                                <%= game.title %>
+                            </a>
+                        </h2>
+
+                        <p class="game-card-price">
+                            $<%= game.price %>
+                        </p>
+
+                        <p class="game-card-rating">
+                            Rating: <%= game.rating %>/10
+                        </p>
+
+                        <% if (game.description) { %>
+                            <p class="game-card-description">
+                                <%= game.description %>
+                            </p>
+                        <% } %>
+
+                        <a
+                            class="button button-small"
+                            href="/games/<%= game.id %>"
+                        >
+                            View Details
+                        </a>
+                    </article>
+                <% }) %>
+
+            <% } else { %>
+
+                <p>No games are currently assigned to this developer.</p>
+
+            <% } %>
+        </section>
+    </main>
+</body>
+</html>
