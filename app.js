@@ -1,3 +1,11 @@
+const net = require('node:net');
+net.setDefaultAutoSelectFamily(false);
+
+if (process.env.NODE_ENV !== 'production') {
+    process.loadEnvFile('.env');
+}
+
+const CustomNotFoundError = require('./errors/CustomNotFoundError');
 const express = require('express');
 const path = require('node:path');
 
@@ -19,10 +27,23 @@ app.use('/genres', genresRouter);
 app.use('/developers', developersRouter);
 app.use('/', indexRouter);
 
+app.use((req, res, next) => {
+    const error = new CustomNotFoundError('Page not found');
+    next(error);
+});
+
+
 app.use((err, req, res, next) => {
     console.error(err);
-    res.status(err.statusCode || 500).send(err.message);
-})
+
+    if (err.statusCode === 404) {
+        return res.status(404).render('404', {
+            message: err.message,
+        });
+    }
+
+    res.status(500).send('Something went wrong.');
+});
 
 const PORT = process.env.PORT || 3000;
 

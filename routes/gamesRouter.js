@@ -18,8 +18,10 @@ const validateGame = [
         .isFloat({ min: 0 }).withMessage('Price must be a number greater than or equal to 0.'),
 
     body('rating')
-        .optional({ values: 'falsy' })
-        .isFloat({ min: 0, max: 10 }).withMessage('Rating must be a number between 0 and 10.'),
+        .notEmpty()
+        .withMessage('Rating is required.')
+        .isFloat({ min: 0, max: 10 })
+        .withMessage('Rating must be a number between 0 and 10.')
 ];
 
 gamesRouter.get('/', gamesController.getGames);

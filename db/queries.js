@@ -10,6 +10,10 @@ async function getAllGames() {
 
 async function getGameById(id) {
     const gameResult = await pool.query("SELECT * FROM games WHERE id = $1", [id]);
+
+    if (gameResult.rows.length === 0)
+        return null;
+
     const genreResult = await pool.query("SELECT name FROM games g JOIN games_genres gg ON g.id = gg.game_id JOIN genres ON gg.genre_id = genres.id WHERE g.id = $1", [id]);
     const developerResult = await pool.query("SELECT name FROM games g JOIN games_developers gd ON g.id = gd.game_id JOIN developers ON gd.developer_id = developers.id WHERE g.id = $1", [id]);
 
@@ -93,7 +97,7 @@ async function deleteGenre(id) {
 
 // Developer related queries
 
-async function getAllDevelopers() { 
+async function getAllDevelopers() {
     const { rows } = await pool.query("SELECT * FROM developers");
 
     return rows;
@@ -120,3 +124,5 @@ async function updateDeveloper(id, name) {
 async function deleteDeveloper(id) {
     await pool.query("DELETE FROM developers WHERE id = $1", [id]);
 }
+
+module.exports = { getAllGames, getGameById, createGame, updateGame, deleteGame, getAllGenres, getGenreById, createGenre, updateGenre, deleteGenre, getAllDevelopers, getDeveloperById, createDeveloper, updateDeveloper, deleteDeveloper };
